@@ -221,7 +221,7 @@ Type objective_function<Type>::operator() ()
   for(int i = 0;i < L;++i){
 	for(int j=0; j<Y; ++j){
   	Elog_index(i,j) = log_q(i) + log_NL(i,j);
-		resid_index(i,j) = (logN_at_len(i,j) - Elog_index(i,j)) * na_matrix(i,j);
+		resid_index(i,j) = (logN_at_len(i,j) - Elog_index(i,j));
 	}
   }
 
@@ -231,7 +231,9 @@ Type objective_function<Type>::operator() ()
   //index, the measurement error
   for(int i=0;i<L;++i){
 	for(int j=0;j<Y;++j){
-   	nll -= dnorm(resid_index(i,j),zero,std_index,true);
+		if(na_matrix(i,j)>0){
+			nll -= dnorm(resid_index(i,j),zero,std_index,true);
+		}
 	}
   }
 
