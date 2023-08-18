@@ -44,8 +44,8 @@ plot_recruitment <- function(model_result, line_size = 1.2, line_color = "red", 
     # Plot recruitment over the years using ggplot2
     p <- ggplot2::ggplot(recruitment, aes(x = Year, y = recruitment)) +
       ggplot2::geom_line(size = line_size, color = line_color, linetype = line_type) +
-      ggplot2::labs(x = "Year", y = "Recruitment", title = "Recruitment Over Years") +
-      ggplot2::theme_minimal()
+      ggplot2::labs(x = "Year", y = "Relative abundance", title = "Recruitment Over Years") +
+      ggplot2::theme_minimal()+ theme(plot.title = element_text(hjust = 0.5))
   } else {
 
      # Filter rows that contain "Rec"
@@ -64,8 +64,8 @@ plot_recruitment <- function(model_result, line_size = 1.2, line_color = "red", 
     p <- ggplot2::ggplot(confidence_intervals_rec, aes(x = Year, y = estimate)) +
       ggplot2::geom_line(size = line_size, color = line_color, linetype = line_type) +
       ggplot2::geom_ribbon(aes(ymin = lower, ymax = upper),  fill = se_color,alpha = se_alpha) +
-      ggplot2::labs(y = "Recruitment", x = "Year", title = "Recruitment Over Years with Confidence Intervals") +
-      ggplot2::theme_minimal()
+      ggplot2::labs(y = "Relative abundance", x = "Year", title = "Recruitment Over Years with Confidence Intervals") +
+      ggplot2::theme_minimal()+ theme(plot.title = element_text(hjust = 0.5))
   }
   return(p)
 }
