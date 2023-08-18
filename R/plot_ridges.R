@@ -24,11 +24,16 @@ plot_ridges <- function(model_result,ridges_alpha=0.8){
   year <- model_result[["year"]]
 
   # Transform the matrices into data frames and add column names
-  df_observed <- as.data.frame(logN_at_len)
+  df_observed <- as.data.frame(exp(as.matrix(logN_at_len)))
+  Total1=as.vector(colSums(df_observed))
+  df_observed=as.data.frame(sweep(x=df_observed,MARGIN=2,STATS=Total1,FUN="/"))
+  df_observed=as.data.frame(df_observed )
   colnames(df_observed) <- year
   df_observed$len_mid <- len_mid
-
-  df_estimated <- as.data.frame(Elog_index)
+  
+  df_estimated <- as.data.frame(exp(Elog_index))
+  Total2=as.vector(colSums(df_estimated))
+  df_estimated=as.data.frame(sweep(x=df_estimated,MARGIN=2,STATS=Total2,FUN="/"))
   colnames(df_estimated) <- year
   df_estimated$len_mid <- len_mid
 
@@ -40,21 +45,21 @@ plot_ridges <- function(model_result,ridges_alpha=0.8){
     tidyr::pivot_longer(-len_mid, names_to = "year", values_to = "Abundance")
 
   # Apply the transformation function to 'Abundance' column
-  df_observed_long$Abundance <- exp(df_observed_long$Abundance)
-  df_estimated_long$Abundance <- exp(df_estimated_long$Abundance)
+  #df_observed_long$Abundance <- exp(df_observed_long$Abundance)
+  #df_estimated_long$Abundance <- exp(df_estimated_long$Abundance)
 
   # Plot the data using ggplot2 with ggridges
   p_observed <- ggplot2::ggplot(df_observed_long, aes(x = len_mid, y = as.factor(year), height = Abundance, fill = as.factor(year))) +
     ggridges::geom_density_ridges(stat = "identity", alpha = ridges_alpha) +
     ggplot2::scale_fill_discrete(name = "Year", guide = NULL) +
-    ggplot2::labs(x = "Body Length", y = "Year", title = "Observed Catch-at-Length Over Years") +
-    ggplot2::theme_minimal()
+    ggplot2::labs(x = "Length", y = "Year", title = "Observed Catch-at-Length Over Years") +
+    ggplot2::theme_minimal()+ theme(plot.title = element_text(hjust = 0.5))
 
   p_estimated <- ggplot2::ggplot(df_estimated_long, aes(x = len_mid, y = as.factor(year), height = Abundance, fill = as.factor(year))) +
     ggridges::geom_density_ridges(stat = "identity", alpha = ridges_alpha) +
     ggplot2::scale_fill_discrete(name = "Year", guide = NULL) +
-    ggplot2::labs(x = "Body Length", y = "Year", title = "Estimated Catch-at-Length Over Years") +
-    ggplot2::theme_minimal()
+    ggplot2::labs(x = "Length", y = "Year", title = "Estimated Catch-at-Length Over Years") +
+    ggplot2::theme_minimal()+ theme(plot.title = element_text(hjust = 0.5))
 
   p<- cowplot::plot_grid(p_observed,p_estimated, ncol = 2)
 
