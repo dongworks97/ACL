@@ -174,10 +174,15 @@ retro_acl <- function(nyear, data.CatL, data.wgt, data.mat, rec.age, nage, M, se
     p <- ggplot(results, aes(x = Year, y = Value, color = RetrospectiveYear, group = RetrospectiveYear)) +
       geom_line(size = line_size) +
       geom_point(data = last_points, size = point_size,shape=point_shape) +  # Add geom_point for the last point
-      facet_wrap(~Variable, scales = facet_scales, ncol = facet_col, nrow = facet_row) +
-      theme_minimal() +
+      facet_wrap(~Variable, labeller = labeller(Variable = 
+                                                 c("B" = "Biomass",
+                                                   "SSB" = "Spawning Stock Biomass",
+                                                   "Rec" = "Recruitment",
+                                                   "N" = "Abundance")),
+                 scales = facet_scales, ncol = facet_col, nrow = facet_row) +
+      theme_minimal() +theme(plot.title = element_text(hjust = 0.5))+
       theme(legend.position = "bottom") +
-      labs(x = "Year", y = "Value", color = "Retrospective Year")
+      labs(x = "Year", y = "Value", color = "Retrospective Year",title="Retrospective analysis")
 
     # Add rho values as text at the left top corner of each facet
     p <- p + geom_text(data = rho_text, aes(x = Year, label = paste0("rho = ", round(Rho, 4))),
