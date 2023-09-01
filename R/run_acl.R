@@ -217,7 +217,7 @@ run_acl <- function(data.CatL,data.wgt,data.mat,rec.age,nage,M,sel_L50,sel_L95,
       opt<-nlminb(opt$par,obj$fn,obj$gr,lower=lower,upper=upper,control=list(trace=0,iter.max=2000,eval.max=10000))
     }
     # opt1<-nlminb(opt$par,obj$fn,obj$gr,lower=lower,upper=upper,control=list(trace=0,iter.max=2000,eval.max=10000))
-    final_outer_mgc<-obj$gr(opt$par)
+    final_outer_mgc<-max(abs(obj$gr(opt$par)))
     par_low_up<- cbind(opt$par,lower,upper)
     report<-obj$report()
     bound_check<-c((as.vector(opt$par)-as.vector(lower)),(as.vector(upper)-as.vector(opt$par)))
