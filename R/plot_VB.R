@@ -59,14 +59,23 @@ plot_VB <- function(model_result, age_range = c(1, 25), line_size = 1.2, line_co
     upper = exp(ss_logk[ "Estimate",] + 1.96 * ss_logk["Std. Error", ])
   )
 
-
-  data <- data.frame(age = seq(age_range[1], age_range[2], by = 1))
-  data <- data %>%
-    mutate(
-      length = VB_func(Linf, k, t0, age),
-      length_lower = VB_func(Linf, ss_k$lower, t0, age),
-      length_upper = VB_func(Linf, ss_k$upper, t0, age)
+ss_linf<-model_result[["est_std"]][grep("^log_Linf", rownames(model_result[["est_std"]])),]
+    ss_linf<-as.data.frame(ss_linf)
+    ss_linf <- data.frame(
+      estimate = exp(ss_linf[ "Estimate",]),
+      lower = exp(ss_linf[ "Estimate",] - 1.96 * ss_linf[ "Std. Error",]),
+      upper = exp(ss_linf[ "Estimate",] + 1.96 * ss_linf["Std. Error", ])
     )
+    
+     
+    
+    data <- data.frame(age = seq(age_range[1], age_range[2], by = 1))
+    data <- data %>%
+      mutate(
+        length = VB_func(Linf, k, t0, age),
+        length_lower = VB_func(ss_linf$lower, ss_k$lower, t0, age),
+        length_upper = VB_func(ss_linf$upper, ss_k$upper, t0, age)
+      )
 
   # Plot the VB function using ggplot2
   p <- ggplot2::ggplot(data, aes(x = age, y = length)) +
