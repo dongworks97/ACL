@@ -29,7 +29,7 @@ plot_VB <- function(model_result, age_range = c(1, 25), line_size = 1.2, line_co
   t0 = model_result[["report"]][["t0"]]
 
   # Create a data frame with a sequence of ages and the corresponding lengths
-  data <- data.frame(age = seq(age_range[1], age_range[2], by = 1))
+  data <- data.frame(age = seq(age_range[1], age_range[2], by = 0.01))
   data <- data %>%
     mutate(length = VB_func(Linf, k, t0, age))
 
@@ -60,7 +60,7 @@ plot_VB <- function(model_result, age_range = c(1, 25), line_size = 1.2, line_co
   )
 
 
-  data <- data.frame(age = seq(age_range[1], age_range[2], by = 1))
+  data <- data.frame(age = seq(age_range[1], age_range[2], by = 0.01))
   data <- data %>%
     mutate(
       length = VB_func(Linf, k, t0, age),
